@@ -1,3 +1,4 @@
+Especificación de Aplicación
 Warframe Hub
 Plataforma web de referencia para la comunidad de Warframe
 
@@ -63,6 +64,32 @@ Sistema de usuarios
 •	RF-17: Cada usuario tiene una página de perfil pública con su nombre, avatar y fecha de registro.
 •	RF-18: El usuario autenticado puede editar su información de perfil.
 
+5. Requisitos no funcionales
+•	RNF-01 Seguridad: Las contraseñas deben almacenarse hasheadas (bcrypt). Las rutas protegidas deben validar el JWT en cada solicitud.
+•	RNF-02 Disponibilidad de datos: Si la API de warframe.market no responde, la sección de precio debe mostrar un mensaje de error no intrusivo sin romper el resto de la ficha.
+•	RNF-03 Compatibilidad: La aplicación debe funcionar correctamente en las últimas versiones de Chrome, Firefox, Safari y Edge.
+
+6. Diseño de interfaz
+Estructura de vistas
+•	/Landing page con CTA 'Explorar Warframes' y acceso al login
+•	/warframes — Catalogo en grilla con búsqueda y filtros
+•	/warframes/:id — Ficha detallada del Warframe
+•	/login y /register — Formularios de autenticación
+•	/profile/:username — Pagina de perfil de usuario
+Estados visuales clave
+•	Estado de carga (skeleton loader) en catalogo y ficha mientras llegan los datos
+•	Estado vacío en catalogo si ningún Warframe coincide con la búsqueda
+•	Estado de error en la sección de precio de mercado si la API de warframe.market no responde
+•	Contador de cooldown visible en la sección de precio, indicando cuanto falta para poder refrescar
+Componentes principales
+•	Header global con logo, navegación y estado de sesión del usuario
+•	WarframeCard: tarjeta del catálogo con imagen, nombre y tipo
+•	WarframeDetail: contenedor de la ficha con tabs o scroll por secciones
+•	AbilityCard: muestra icono, nombre y descripción de cada habilidad
+•	StatsTable: tabla de estadísticas base y máximas
+•	MarketPrice: precio de mercado con botón de refresco y cooldown
+•	UserProfileCard: cabecera del perfil con avatar y datos del usuario
+
 
 7. Entradas y salidas
 Entradas
@@ -77,6 +104,16 @@ Salidas
 •	Precio de mercado actualizado consumido desde warframe.market
 •	Token JWT retornado al usuario tras login exitoso, almacenado en el cliente para autorizar rutas protegidas
 •	Página de perfil con datos públicos del usuario
+
+
+8. Reglas de negocio
+•	RN-01: El catalogo y las fichas son de acceso público. No se requiere autenticación para consultarlos.
+•	RN-02: El registro de usuario requiere un email único y una contraseña de al menos 8 caracteres.
+•	RN-03: El precio de mercado no puede refrescarse antes de que transcurran 90 segundos desde la última consulta exitosa a la API de warframe.market.
+•	RN-04: Si warframe.market devuelve un error o no responde en 5 segundos, se muestra el último precio cacheado con su marca de tiempo, o un mensaje de no disponible si no existe cache.
+•	RN-05: Los datos de los 64 Warframes (descripción, habilidades, estadísticas, crafting, adquisición, curiosidades) se almacenan en la base de datos propia del proyecto y son administrados por el desarrollador. No se consumen en tiempo real de ninguna API externa salvo el precio.
+•	RN-06: El nombre de usuario en el perfil es único y no puede cambiarse una vez registrado (en el MVP).
+
 
 9. Arquitectura técnica
 
@@ -106,6 +143,20 @@ Backend
 
 Externas
 •	API de warframe.market — Precio de mercado en tiempo real (publica, sin autenticación requerida para consultas básicas)
+
+11. Contratos / API interna
+Endpoints principales
+•	GET /api/warframes — Lista todos los Warframes (id, nombre, tipo, imagen)
+•	GET /api/warframes/:id — Devuelve la ficha completa de un Warframe
+•	GET /api/warframes/:id/price — Devuelve el precio de mercado (con cache de 90s)
+•	POST /api/auth/register — Registro de nuevo usuario
+•	POST /api/auth/login — Login, retorna JWT
+•	GET /api/users/:username — Perfil público del usuario
+•	PUT /api/users/me — Edicion de perfil (requiere JWT)
+Modelos de datos clave
+•	Warframe: { id, nombre, tipo, descripcion, imagen_url, habilidades[], stats{}, crafting{}, adquisicion[], curiosidades[], fecha_creacion }
+•	Usuario: { id, username, email, password_hash, avatar_url, fecha_registro }
+•	PrecioMercado: { warframe_id, precio_compra, precio_venta, ultima_actualizacion }
 
 
 12. Casos de uso
@@ -146,3 +197,10 @@ Externas
 •	Riesgo: El tiempo de desarrollo puede extenderse. Mitigación: el MVP está acotado a los Warframes únicamente, reduciendo el scope al mínimo funcional entregable.
 •	Riesgo: MySQL Workbench no está confirmado como base de datos. Si cambia a otra base de datos, el backend deberá adaptarse. Mitigación: encapsular toda la lógica de acceso a datos en un repositorio separado para facilitar el cambio.
 •	Riesgo: Inconsistencias visuales entre la versión desktop y mobile. Mitigación: desarrollar con enfoque mobile-first desde el inicio.
+
+18. Anexos⚠(Información NO correcta)
+•	API externa utilizada: https://api.warframe.market/v1 (documentación publica)
+•	Repositorios del proyecto: warframe-hub-frontend / warframe-hub-backend / warframe-hub-db
+•	Referencia de Warframes: https://warframe.fandom.com/wiki/Warframe_Wiki (fuente de datos para seed)
+•	Herramienta de diseño: por definir (Figma)
+•	Total de Warframes en scope del MVP: 64
