@@ -1,0 +1,46 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, 
+SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema warframe
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `warframe` DEFAULT CHARACTER SET utf8mb4 ;
+USE `warframe` ;
+
+-- -----------------------------------------------------
+-- Table `perfil` --La tabla perfil se usaría para guardar la información visual y editable del usuario (como avatar, banner y descripción)
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `perfil` (
+  `id_perfil` INT NOT NULL AUTO_INCREMENT,
+  `avatar` VARCHAR(255),
+  `banner` VARCHAR(255),
+  `descripcion` TEXT,
+  PRIMARY KEY (`id_perfil`)
+) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `usuarios` --Login y registro
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `usuarios` (
+  `id_usuario` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  `apellido` VARCHAR(45) NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
+  `contraseña` VARCHAR(255) NOT NULL,
+  `perfil_id_perfil` INT NOT NULL UNIQUE,
+  PRIMARY KEY (`id_usuario`),
+  INDEX `fk_usuarios_perfil_idx` (`perfil_id_perfil`),
+  CONSTRAINT `fk_usuarios_perfil`
+    FOREIGN KEY (`perfil_id_perfil`)
+    REFERENCES `perfil` (`id_perfil`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE = InnoDB;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
