@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `nombre` VARCHAR(45) NOT NULL,
   `apellido` VARCHAR(45) NOT NULL,
   `username` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
   `contraseña` VARCHAR(255) NOT NULL,
   `perfil_id_perfil` INT NOT NULL UNIQUE,
   PRIMARY KEY (`id_usuario`),
