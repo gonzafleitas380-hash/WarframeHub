@@ -42,6 +42,48 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
     ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
+-- lo que hace esta tabla es guardar los warframes que un usuario marcó como favoritos.
+
+CREATE TABLE IF NOT EXISTS `warframe`.`favoritos` (
+  `id_favorito` INT NOT NULL,
+  `nombre_warframe` VARCHAR(45) NOT NULL,
+  `fecha_agregado` DATETIME NOT NULL,
+  `usuarios_id_usuario` INT NOT NULL,
+  PRIMARY KEY (`id_favorito`),
+  UNIQUE INDEX `id_favorito_UNIQUE` (`id_favorito` ASC),
+  INDEX `fk_favoritos_usuarios1_idx` (`usuarios_id_usuario` ASC),
+  CONSTRAINT `fk_favoritos_usuarios1`
+    FOREIGN KEY (`usuarios_id_usuario`)
+    REFERENCES `warframe`.`usuarios` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- lo que hace esta tabla es guardar las publicaciones del mercado que quiero revisar después
+
+-- -----------------------------------------------------
+-- Table `warframe`.`compras_guardadas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `warframe`.`compras_guardadas` (
+  `id_compra` INT NOT NULL,
+  `nombre_item` VARCHAR(100) NOT NULL,
+  `url_nombre` VARCHAR(255) NOT NULL,
+  `vendedor` VARCHAR(45) NOT NULL,
+  `precio` DECIMAL(10,2) NOT NULL,
+  `estado_del_vendedor` VARCHAR(45) NOT NULL,
+  `fecha_guardada` DATETIME NOT NULL,
+  `usuarios_id_usuario` INT NOT NULL,
+  PRIMARY KEY (`id_compra`),
+  UNIQUE INDEX `id_compra_UNIQUE` (`id_compra` ASC),
+  INDEX `fk_compras_guardadas_usuarios1_idx` (`usuarios_id_usuario` ASC),
+  CONSTRAINT `fk_compras_guardadas_usuarios1`
+    FOREIGN KEY (`usuarios_id_usuario`)
+    REFERENCES `warframe`.`usuarios` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
