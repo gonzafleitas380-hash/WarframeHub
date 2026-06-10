@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `apellido` VARCHAR(45) NOT NULL,
   `username` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `contraseña` VARCHAR(255) NOT NULL,
+  `contrasena` VARCHAR(255) NOT NULL,
   `perfil_id_perfil` INT NOT NULL UNIQUE,
   PRIMARY KEY (`id_usuario`),
   INDEX `fk_usuarios_perfil_idx` (`perfil_id_perfil`),
@@ -45,15 +45,14 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 -- lo que hace esta tabla es guardar los warframes que un usuario marcó como favoritos.
 
 CREATE TABLE IF NOT EXISTS `warframe`.`favoritos` (
-  `id_favorito` INT NOT NULL,
+  `id_favorito` INT NOT NULL AUTO_INCREMENT,
   `nombre_warframe` VARCHAR(45) NOT NULL,
   `fecha_agregado` DATETIME NOT NULL,
-  `usuarios_id_usuario` INT NOT NULL,
+  `id_usuario` INT NOT NULL,
   PRIMARY KEY (`id_favorito`),
-  UNIQUE INDEX `id_favorito_UNIQUE` (`id_favorito` ASC),
-  INDEX `fk_favoritos_usuarios1_idx` (`usuarios_id_usuario` ASC),
-  CONSTRAINT `fk_favoritos_usuarios1`
-    FOREIGN KEY (`usuarios_id_usuario`)
+INDEX `fk_favoritos_usuarios1_idx` (`id_usuario` ASC),
+CONSTRAINT `fk_favoritos_usuarios1`
+    FOREIGN KEY (`id_usuario`)
     REFERENCES `warframe`.`usuarios` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -65,19 +64,18 @@ ENGINE = InnoDB;
 -- Table `warframe`.`compras_guardadas`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `warframe`.`compras_guardadas` (
-  `id_compra` INT NOT NULL,
+  `id_compra` INT NOT NULL AUTO_INCREMENT,
   `nombre_item` VARCHAR(100) NOT NULL,
-  `url_nombre` VARCHAR(255) NOT NULL,
+  `item_url_nombre` VARCHAR(255) NOT NULL,
   `vendedor` VARCHAR(45) NOT NULL,
   `precio` DECIMAL(10,2) NOT NULL,
-  `estado_del_vendedor` VARCHAR(45) NOT NULL,
-  `fecha_guardada` DATETIME NOT NULL,
-  `usuarios_id_usuario` INT NOT NULL,
+  `estado_vendedor` VARCHAR(45) NOT NULL,
+  `fecha_guardado` DATETIME NOT NULL,
+  `id_usuario` INT NOT NULL,
   PRIMARY KEY (`id_compra`),
-  UNIQUE INDEX `id_compra_UNIQUE` (`id_compra` ASC),
-  INDEX `fk_compras_guardadas_usuarios1_idx` (`usuarios_id_usuario` ASC),
-  CONSTRAINT `fk_compras_guardadas_usuarios1`
-    FOREIGN KEY (`usuarios_id_usuario`)
+  INDEX `fk_compras_guardadas_usuarios1_idx` (`id_usuario` ASC),
+CONSTRAINT `fk_compras_guardadas_usuarios1`
+    FOREIGN KEY (`id_usuario`)
     REFERENCES `warframe`.`usuarios` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
