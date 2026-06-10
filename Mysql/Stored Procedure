@@ -2,7 +2,6 @@ USE warframe;
 
 DELIMITER $$
 
-
 -- 1. Cambiar username
 
 CREATE PROCEDURE sp_cambiar_username(
@@ -30,44 +29,46 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
+DELIMITER ;
 
-
--- 2. Cambiar contraseña
+-- 2. Cambiar contrasena
+DELIMITER $$
 
 CREATE PROCEDURE sp_cambiar_contraseña(
     IN p_id_usuario        INT,
-    IN p_contraseña_actual VARCHAR(255),
-    IN p_contraseña_nueva  VARCHAR(255)
+    IN p_contrasena_actual VARCHAR(255),
+    IN p_contrasena_nueva  VARCHAR(255)
 )
 BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM usuarios
         WHERE id_usuario = p_id_usuario
-          AND contraseña = p_contraseña_actual
+          AND contrasena = p_contrasena_actual
     ) THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error: la contraseña actual es incorrecta.';
     END IF;
 
-    IF p_contraseña_nueva = '' OR p_contraseña_nueva IS NULL THEN
+    IF p_contrasena_nueva = '' OR p_contrasena_nueva IS NULL THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error: la nueva contraseña no puede estar vacía.';
     END IF;
 
-    IF p_contraseña_nueva = p_contraseña_actual THEN
+    IF p_contrasena_nueva = p_contrasena_actual THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error: la nueva contraseña debe ser diferente a la actual.';
     END IF;
 
     UPDATE usuarios
-    SET contraseña = p_contraseña_nueva
+    SET contrasena = p_contrasena_nueva
     WHERE id_usuario = p_id_usuario;
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
-
+DELIMITER ;
 
 -- 3. Cambiar nombre
+DELIMITER $$
 
 CREATE PROCEDURE sp_cambiar_nombre(
     IN p_id_usuario   INT,
@@ -90,9 +91,10 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
-
+DELIMITER ;
 
 -- 4. Cambiar apellido
+DELIMITER $$
 
 CREATE PROCEDURE sp_cambiar_apellido(
     IN p_id_usuario     INT,
@@ -115,9 +117,10 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
-
+DELIMITER ;
 
 -- 5. Cambiar avatar
+DELIMITER $$
 
 CREATE PROCEDURE sp_cambiar_avatar(
     IN p_id_usuario   INT,
@@ -140,8 +143,10 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
+DELIMITER ;
 
 -- 6. Cambiar banner
+DELIMITER $$
 
 CREATE PROCEDURE sp_cambiar_banner(
     IN p_id_usuario   INT,
@@ -164,8 +169,10 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
+DELIMITER ;
 
 -- 7. Cambiar descripcion
+DELIMITER $$
 
 CREATE PROCEDURE sp_cambiar_descripcion(
     IN p_id_usuario        INT,
@@ -188,15 +195,17 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
+DELIMITER ;
 
 -- 8. Registrar usuario
+DELIMITER $$
 
 CREATE PROCEDURE sp_registrar_usuario(
     IN p_nombre     VARCHAR(45),
     IN p_apellido   VARCHAR(45),
     IN p_username   VARCHAR(45),
     IN p_email      VARCHAR(45),
-    IN p_contraseña VARCHAR(255)
+    IN p_contrasena VARCHAR(255)
 )
 BEGIN
     DECLARE v_perfil_id INT;
@@ -205,7 +214,7 @@ BEGIN
        p_apellido = '' OR p_apellido IS NULL OR
        p_username = '' OR p_username IS NULL OR
        p_email = '' OR p_email IS NULL OR
-       p_contraseña = '' OR p_contraseña IS NULL THEN
+       p_contrasena = '' OR p_contrasena IS NULL THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error: todos los campos son obligatorios.';
     END IF;
@@ -222,7 +231,7 @@ BEGIN
             apellido,
             username,
             email,
-            contraseña,
+            contrasena,
             perfil_id_perfil
         )
         VALUES (
@@ -230,7 +239,7 @@ BEGIN
             p_apellido,
             p_username,
             p_email,
-            p_contraseña,
+            p_contrasena,
             v_perfil_id
         );
 
@@ -239,18 +248,20 @@ BEGIN
     SELECT LAST_INSERT_ID() AS id_usuario_creado,
            v_perfil_id AS id_perfil_creado;
 END$$
+DELIMITER ;
 
--- 10. Login
+-- 9. Login
+DELIMITER $$
 
 CREATE PROCEDURE sp_login(
     IN p_username   VARCHAR(45),
-    IN p_contraseña VARCHAR(255)
+    IN p_contrasena VARCHAR(255)
 )
 BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM usuarios
         WHERE username = p_username
-          AND contraseña = p_contraseña
+          AND contrasena = p_contraseña
     ) THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error: usuario o contraseña incorrectos.';
@@ -269,10 +280,12 @@ BEGIN
     FROM usuarios u
     INNER JOIN perfil p ON u.perfil_id_perfil = p.id_perfil
     WHERE u.username = p_username
-      AND u.contraseña = p_contraseña;
+      AND u.contrasena = p_contrasena;
 END$$
+DELIMITER ;
 
--- SP de búsqueda de usuario
+-- 10.SP de búsqueda de usuario
+DELIMITER $$
 
 CREATE PROCEDURE sp_buscar_usuario(
     IN p_busqueda VARCHAR(45)
@@ -298,8 +311,10 @@ BEGIN
        OR u.apellido LIKE CONCAT('%', p_busqueda, '%')
        OR u.email    LIKE CONCAT('%', p_busqueda, '%');
 END$$
+DELIMITER ;
 
 -- cambiar email
+DELIMITER $$
 
 CREATE PROCEDURE sp_cambiar_email(
     IN p_id_usuario INT,
@@ -326,14 +341,85 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
+DELIMITER ;
+
+-- 12. guardar compra
+DELIMITER $$
+
+CREATE PROCEDURE sp_guardar_compra(
+    IN p_id_usuario INT,
+    IN p_nombre_item VARCHAR(100),
+    IN p_item_url_nombre VARCHAR(255),
+    IN p_vendedor VARCHAR(45),
+    IN p_precio DECIMAL(10,2),
+    IN p_estado_vendedor VARCHAR(45)
+)
+BEGIN
+    INSERT INTO compras_guardadas (
+        id_usuario,
+        nombre_item,
+        item_url_nombre,
+        vendedor,
+        precio,
+        estado_vendedor,
+        fecha_guardado
+    )
+    VALUES (
+        p_id_usuario,
+        p_nombre_item,
+        p_item_url_nombre,
+        p_vendedor,
+        p_precio,
+        p_estado_vendedor,
+        NOW()
+    );
+
+    SELECT LAST_INSERT_ID() AS id_compra_guardada;
+END$$
+DELIMITER ;
+
+-- eliminar compra
+DELIMITER $$
+
+CREATE PROCEDURE sp_eliminar_compra(
+    IN p_id_compra INT
+)
+BEGIN
+    DELETE FROM compras_guardadas
+    WHERE id_compra = p_id_compra;
+
+    SELECT ROW_COUNT() AS filas_afectadas;
+END$$
+DELIMITER ;
+
+-- obtener compras
+DELIMITER $$
+
+CREATE PROCEDURE sp_obtener_compras(
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT
+        id_compra,
+        nombre_item,
+        item_url_nombre,
+        vendedor,
+        precio,
+        estado_vendedor,
+        fecha_guardado
+    FROM compras_guardadas
+    WHERE id_usuario = p_id_usuario
+    ORDER BY fecha_guardado DESC;
+END$$
 
 DELIMITER ;
+
 
 -- Para llamar a los sp
 
 CALL sp_cambiar_username(1, 'nuevoUsername');
 
-CALL sp_cambiar_contraseña(1, 'contraseñaActual', 'contraseñaNueva');
+CALL sp_cambiar_contrasena(1, 'contraseñaActual', 'contraseñaNueva');
 
 CALL sp_cambiar_nombre(1, 'NuevoNombre');
 
@@ -345,16 +431,21 @@ CALL sp_cambiar_banner(1, 'https://url.com/banner.png');
 
 CALL sp_cambiar_descripcion(1, 'Nueva descripción del perfil');
 
-CALL sp_cambiar_email(1, 'nuevoemail@gmail.com');
-
-CALL sp_registrar_usuario(
-    'Nombre',
-    'Apellido',
-    'username',
-    'correo@gmail.com',
-    'contraseña'
-);
+CALL sp_registrar_usuario('Nombre', 'Apellido', 'username', 'contraseña');
 
 CALL sp_login('username', 'contraseña');
 
 CALL sp_buscar_usuario('Nombre del usuario');
+
+CALL sp_guardar_compra(
+    1,
+    'Wisp Prime Set',
+    'https://warframe.market/items/wisp_prime_set',
+    'Jugador123',
+    95,
+    'online'
+);
+
+CALL sp_eliminar_compra(1);
+
+CALL sp_obtener_compras(1);
