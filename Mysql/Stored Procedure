@@ -14,13 +14,18 @@ BEGIN
             SET MESSAGE_TEXT = 'Error: el username no puede estar vacío.';
     END IF;
 
-    IF NOT EXISTS (
-        SELECT 1
-        FROM usuarios
-        WHERE id_usuario = p_id_usuario
-    ) THEN
+    IF NOT EXISTS (SELECT 1 FROM usuarios WHERE id_usuario = p_id_usuario) THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error: el usuario no existe.';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM usuarios
+        WHERE username = p_nuevo_username
+          AND id_usuario <> p_id_usuario
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Error: ese username ya está en uso.';
     END IF;
 
     UPDATE usuarios
@@ -29,12 +34,13 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
+
 DELIMITER ;
 
 -- 2. Cambiar contrasena
 DELIMITER $$
 
-CREATE PROCEDURE sp_cambiar_contraseña(
+CREATE PROCEDURE sp_cambiar_contrasena(
     IN p_id_usuario        INT,
     IN p_contrasena_actual VARCHAR(255),
     IN p_contrasena_nueva  VARCHAR(255)
@@ -65,6 +71,7 @@ BEGIN
 
     SELECT ROW_COUNT() AS filas_afectadas;
 END$$
+
 DELIMITER ;
 
 -- 3. Cambiar nombre
@@ -313,7 +320,7 @@ BEGIN
 END$$
 DELIMITER ;
 
--- cambiar email
+-- 11. cambiar email
 DELIMITER $$
 
 CREATE PROCEDURE sp_cambiar_email(
@@ -378,7 +385,7 @@ BEGIN
 END$$
 DELIMITER ;
 
--- eliminar compra
+-- 13. eliminar compra
 DELIMITER $$
 
 CREATE PROCEDURE sp_eliminar_compra(
@@ -392,7 +399,7 @@ BEGIN
 END$$
 DELIMITER ;
 
--- obtener compras
+-- 14. obtener compras
 DELIMITER $$
 
 CREATE PROCEDURE sp_obtener_compras(
