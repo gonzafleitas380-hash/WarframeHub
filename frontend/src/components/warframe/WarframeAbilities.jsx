@@ -1,5 +1,28 @@
 import { useRef } from 'react';
 
+const DESC_ICONS = {
+  '{lmb}': '/warframes-assets/shared/abilities/mouse-left.png',
+  '{rmb}': '/warframes-assets/shared/abilities/mouse-right.png',
+};
+
+function renderDescripcion(texto) {
+  if (!texto) return null;
+  const lineas = texto.split('\n');
+  return lineas.map((linea, li) => {
+    const partes = linea.split(/(\{lmb\}|\{rmb\})/g);
+    return (
+      <span key={li}>
+        {partes.map((parte, pi) =>
+          DESC_ICONS[parte]
+            ? <img key={pi} src={DESC_ICONS[parte]} alt="" className="wf-abl__desc--mouse" />
+            : parte
+        )}
+        {li < lineas.length - 1 && <br />}
+      </span>
+    );
+  });
+}
+
 function AbilityCard({ habilidad }) {
   const videoRef = useRef(null);
 
@@ -27,11 +50,16 @@ function AbilityCard({ habilidad }) {
       <img src={habilidad.imagen} alt={habilidad.nombre} />
       <div className="wf-abl__card--name">{habilidad.nombre}</div>
 
-      {habilidad.video && (
+      {(habilidad.video || habilidad.imagenPopup || habilidad.stats?.length > 0) && (
         <div className="wf-abl__popup--wrap">
-          <div className="wf-abl__popup--video">
-            <video ref={videoRef} src={habilidad.video} muted loop preload="none" />
-          </div>
+          {(habilidad.video || habilidad.imagenPopup) && (
+            <div className="wf-abl__popup--video">
+              {habilidad.video
+                ? <video ref={videoRef} src={habilidad.video} muted loop preload="none" />
+                : <img src={habilidad.imagenPopup} alt={habilidad.nombre} />
+              }
+            </div>
+          )}
           <div className="wf-abl__popup--body">
             <div className="wf-abl__popup--title">{habilidad.nombre}</div>
             <div className="wf-abl__popup--rank">RANGO MAX</div>
@@ -93,7 +121,7 @@ function WarframeAbilities({ data }) {
             </div>
             <div className="wf-abl__detail--name">{h.nombre.toUpperCase()}</div>
             <div className="wf-abl__detail--desc">
-              {h.descripcion}
+              {renderDescripcion(h.descripcion)}
               {h.augment && (
                 <span className="wf-abl__detail--aug">
                   ⬡ AUGMENT — {h.augment}

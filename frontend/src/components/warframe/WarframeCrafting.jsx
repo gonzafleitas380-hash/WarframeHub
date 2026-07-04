@@ -27,7 +27,7 @@ function WarframeCrafting({ data }) {
             <div className="wf-cft__foundry--icon">💰</div>
             <div>
               <div className="wf-cft__foundry--name">Créditos Totales</div>
-              <div className="wf-cft__foundry--val">{crafting.creditosTotal.toLocaleString()} Credits</div>
+              <div className="wf-cft__foundry--val">{crafting.creditosTotal !== '' ? Number(crafting.creditosTotal).toLocaleString() : '—'} Credits</div>
               <div className="wf-cft__foundry--note">15k × 3 partes + 25k principal</div>
             </div>
           </div>

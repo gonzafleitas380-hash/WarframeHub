@@ -4,8 +4,7 @@ function WarframeHero({ data }) {
 
   return (
     <div className="wf-hero__card--root">
-      <div className="wf-hero__scanline--anim"></div>
-      <div className="wf-hero__corner--top-left"></div>
+<div className="wf-hero__corner--top-left"></div>
       <div className="wf-hero__corner--bottom-right"></div>
       <div className="wf-hero__img--placeholder">
         <img src={data.imagenes.hero} alt={data.nombre} />
@@ -13,7 +12,9 @@ function WarframeHero({ data }) {
       <div className="wf-hero__hud--overlay">
         <div className="wf-hero__hud--panel">
           <div className="wf-hero__hud--label">Rol</div>
-          <div className="wf-hero__hud--value">{data.rol}</div>
+          <div className="wf-hero__hud--value">
+            {Array.isArray(data.rol) ? data.rol.join(' · ') : data.rol}
+          </div>
         </div>
         <div className="wf-hero__hud--panel">
           <div className="wf-hero__hud--label">Complejidad</div>

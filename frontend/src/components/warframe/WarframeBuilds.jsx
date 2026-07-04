@@ -42,7 +42,9 @@ function ModCard({ mod }) {
 
 function WarframeBuilds({ data }) {
   const { build } = data;
-  const aura   = build.mods.find(m => m.tipo === 'aura');
+  const auras  = data.build.dobleAura
+    ? build.mods.filter(m => m.tipo === 'aura')
+    : [build.mods.find(m => m.tipo === 'aura')].filter(Boolean);
   const exilus = build.mods.find(m => m.tipo === 'exilus');
   const mods   = build.mods.filter(m => m.tipo === 'mod');
   const fila2  = mods.slice(0, 4);
@@ -98,7 +100,7 @@ function WarframeBuilds({ data }) {
 
         <div className="wf-bld__grid--wrap">
           <div className="wf-bld__grid--row">
-            {aura && <ModCard mod={aura} />}
+            {auras.map((mod, i) => <ModCard key={i} mod={mod} />)}
             {exilus && <ModCard mod={exilus} />}
           </div>
           <div className="wf-bld__grid--row">

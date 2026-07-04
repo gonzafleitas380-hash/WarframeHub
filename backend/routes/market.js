@@ -3,57 +3,38 @@ import fetch from 'node-fetch';
 
 const router = express.Router();
 
-const WFM_BASE = 'https://api.warframe.market/v1';
-
-// Convierte "Plano de Wisp Prime" → "wisp_prime_blueprint"
-function toWFMSlug(nombre) {
-  return nombre
-    .toLowerCase()
-    .replace(/plano de las /g, '')
-    .replace(/plano del /g, '')
-    .replace(/plano de /g, '')
-    .replace(/blueprint \(prime\)/g, 'prime_blueprint')
-    .replace(/neuroptics blueprint \(prime\)/g, 'neuroptics_prime_blueprint')
-    .replace(/chassis blueprint \(prime\)/g, 'chassis_prime_blueprint')
-    .replace(/systems blueprint \(prime\)/g, 'systems_prime_blueprint')
-    .replace(/\s+/g, '_')
-    .replace(/[^a-z0-9_]/g, '');
-}
+const WFM_BASE = 'https://api.warframe.market/v2';
 
 router.get('/:item', async (req, res) => {
   const slug = req.params.item;
 
   try {
-    const response = await fetch(`${WFM_BASE}/items/${slug}/orders`, {
+    const response = await fetch(`${WFM_BASE}/orders/item/${slug}/top`, {
       headers: {
-        'Platform': 'pc',
-        'Language': 'en',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
     });
 
     if (!response.ok) {
-      return res.status(404).json({ error: `Item "${slug}" no encontrado en warframe.market` });
-    }
-
-    const data = await response.json();
-
-    // Filtra solo vendedores online con órdenes de venta
-    const ordenes = data.payload.orders
-      .filter(o =>
-        o.order_type === 'sell' &&
-        o.user.status === 'ingame'
-      )
-      .sort((a, b) => a.platinum - b.platinum);
-
-    if (ordenes.length === 0) {
       return res.json({ precio: null, vendedor: null });
     }
 
-    const mejor = ordenes[0];
+    const json = await response.json();
+    const ventas = json?.data?.sell;
+
+    if (!ventas || ventas.length === 0) {
+      return res.json({ precio: null, vendedor: null });
+    }
+
+    // Filtrar solo los que están ingame y tomar el más barato
+    const ingame = ventas.filter(o => o.user.status === 'ingame');
+    const mejor = ingame.length > 0 ? ingame[0] : ventas[0];
+
     res.json({
-      precio: mejor.platinum,
-      vendedor: mejor.user.ingame_name
+      precio:   mejor.platinum,
+      vendedor: mejor.user.ingameName,
+      estado:   mejor.user.status
     });
 
   } catch (err) {

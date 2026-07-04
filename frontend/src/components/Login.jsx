@@ -101,11 +101,12 @@ function RegisterPanel({ onSubmit, loading, error }) {
   const [nombre,     setNombre]     = useState("");
   const [apellido,   setApellido]   = useState("");
   const [username,   setUsername]   = useState("");
+  const [email,      setEmail]      = useState("");
   const [contraseña, setContraseña] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSubmit({ nombre, apellido, username, contraseña });
+    onSubmit({ nombre, apellido, username, email, contraseña });
   }
 
   return (
@@ -136,6 +137,14 @@ function RegisterPanel({ onSubmit, loading, error }) {
         value={username}
         onChange={e => setUsername(e.target.value)}
         autoComplete="username"
+      />
+      <Field
+        label="EMAIL"
+        type="email"
+        placeholder="tu@email.com"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        autoComplete="email"
       />
       <Field
         label="CONTRASEÑA"
@@ -183,8 +192,9 @@ export default function Login() {
         setLoginError(data.error || "Usuario o contraseña incorrectos.");
         return;
         }
-        login(data.usuario)   // ← conecta con el AuthContext
-        navigate('/')         // ← vuelve al home
+        login(data.usuario);
+        const from = location.state?.from || '/';
+        navigate(from, { replace: true });
         } catch {
             setLoginError("No se pudo conectar con el servidor.");
         } finally {
@@ -193,8 +203,8 @@ export default function Login() {
     }
 
   /* Llamada al endpoint de registro (sp_registrar_usuario) */
-  async function handleRegister({ nombre, apellido, username, contraseña }) {
-    if (!nombre || !apellido || !username || !contraseña) {
+  async function handleRegister({ nombre, apellido, username, email, contraseña }) {
+    if (!nombre || !apellido || !username || !email || !contraseña) {
       setRegisterError("Completá todos los campos.");
       return;
     }
@@ -204,7 +214,7 @@ export default function Login() {
       const res  = await fetch("/api/register", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ nombre, apellido, username, contraseña }),
+        body:    JSON.stringify({ nombre, apellido, username, email, contraseña }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -247,7 +257,7 @@ export default function Login() {
         <div className="wf-panel wf-panel--brand">
           <div className="wf-brand-content">
             <WarframeLogo />
-            <p className="wf-brand-name">WARFRAME</p>
+            <p className="wf-brand-name">WARFRAME HUB</p>
             <p className="wf-brand-sub">OPERADOR IDENTIFICADO</p>
             <div className="wf-divider" />
             <button

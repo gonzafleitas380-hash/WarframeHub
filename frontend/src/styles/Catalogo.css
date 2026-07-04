@@ -88,12 +88,26 @@
       object-fit: cover;
       object-position: center top;
       transform: scale(1);
-      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
       display: block;
+      position: absolute;
+      inset: 0;
+    }
+
+    .card__img--prime {
+      opacity: 0;
     }
 
     .card-wf:hover .card__img {
       transform: scale(1.12);
+    }
+
+    .card-wf--prime:hover .card__img:not(.card__img--prime) {
+      opacity: 0;
+    }
+
+    .card-wf--prime:hover .card__img--prime {
+      opacity: 1;
     }
 
     /* Subtle vignette overlay */
@@ -188,6 +202,11 @@
   display: block;
 }
 
+/* En el catálogo no hay menú hamburguesa: mantener ambos botones visibles en mobile */
+@media (max-width: 640px) {
+  .cat-nav .auth-buttons { display: flex; }
+}
+
 /* ── BARRA STICKY ── */
 .cat-bar--root {
   position: sticky;
@@ -230,14 +249,37 @@
 }
 .cat-bar__search--clear:hover { color: #c8a96e; }
 
+/* Botón Filtros */
+.cat-bar__filters-btn {
+  display: flex; align-items: center; gap: 0.4rem;
+  margin-left: auto;
+  background: none;
+  border: 1px solid #252a3a;
+  color: #4a6880;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cat-bar__filters-btn:hover { border-color: #c8a96e; color: #c8a96e; }
+.cat-bar__filters-btn.active { border-color: #c8a96e; color: #c8a96e; background: rgba(200,169,110,0.08); }
+.cat-bar__filters-chevron { font-size: 0.6rem; }
+
 /* Tabs */
 .cat-bar__tabs--wrap {
   display: flex;
+  justify-content: center;
   gap: 0;
   padding: 0 2rem;
   border-bottom: 1px solid #1a2535;
   overflow-x: auto;
   scrollbar-width: none;
+  animation: cat-fadeDown 0.15s ease both;
 }
 .cat-bar__tabs--wrap::-webkit-scrollbar { display: none; }
 
@@ -377,6 +419,72 @@
   gap: 10px;
   padding: 4px 8px 16px;
 }
+
+/* Botón favorito */
+.card__fav-btn {
+  position: absolute;
+  top: 6px; left: 6px;
+  background: rgba(10,12,18,0.7);
+  border: 1px solid #252a3a;
+  color: #4a6880;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.card__fav-btn:hover { border-color: #e05070; color: #e05070; background: rgba(224,80,112,0.15); }
+.card__fav-btn.active { border-color: #e05070; color: #e05070; background: rgba(224,80,112,0.15); }
+
+/* Popup login */
+.fav-popup__overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+}
+.fav-popup {
+  background: #13161f;
+  border: 1px solid #252a3a;
+  border-radius: 6px;
+  padding: 2rem;
+  max-width: 340px; width: 90%;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.8rem;
+  text-align: center;
+  animation: cat-fadeDown 0.2s ease both;
+}
+.fav-popup__icon { font-size: 2rem; color: #e05070; }
+.fav-popup__title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: #d8e8f0; margin: 0;
+}
+.fav-popup__sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem; color: #4a6880;
+  margin: 0; line-height: 1.5;
+}
+.fav-popup__btns { display: flex; gap: 0.6rem; margin-top: 0.4rem; }
+.fav-popup__btn {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.45rem 1.1rem;
+  border-radius: 2px; cursor: pointer;
+  transition: all 0.2s;
+}
+.fav-popup__btn--primary {
+  background: #e05070; border: 1px solid #e05070; color: #fff;
+}
+.fav-popup__btn--primary:hover { background: #c03050; border-color: #c03050; }
+.fav-popup__btn--secondary {
+  background: none; border: 1px solid #252a3a; color: #4a6880;
+}
+.fav-popup__btn--secondary:hover { border-color: #4a6880; color: #d8e8f0; }
 
 /* Badge prime */
 .card__prime-badge {

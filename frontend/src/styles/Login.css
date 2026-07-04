@@ -6,21 +6,21 @@
 
 /* ── Variables ── */
 :root {
-  --wf-bg:          #070c18;
-  --wf-bg-alt:      #0a1020;
-  --wf-surface:     #0d1828;
-  --wf-border:      #1a3050;
-  --wf-border-2:    #1e3a5f;
-  --wf-accent:      #00aadd;
-  --wf-accent-2:    #0066aa;
-  --wf-accent-glow: rgba(0, 170, 221, 0.25);
-  --wf-text:        #c8e8ff;
-  --wf-text-dim:    #4a8ab5;
-  --wf-error:       #ff4466;
-  --wf-success:     #00cc88;
-  --wf-font-head:   'Orbitron', sans-serif;
-  --wf-font-body:   'Rajdhani', sans-serif;
-  --wf-transition:  0.65s cubic-bezier(0.77, 0, 0.18, 1);
+  --auth-bg:          #070c18;
+  --auth-bg-alt:      #0a1020;
+  --auth-surface:     #0d1828;
+  --auth-border:      #1a3050;
+  --auth-border-2:    #1e3a5f;
+  --auth-accent:      #00aadd;
+  --auth-accent-2:    #0066aa;
+  --auth-accent-glow: rgba(0, 170, 221, 0.25);
+  --auth-text:        #c8e8ff;
+  --auth-text-dim:    #4a8ab5;
+  --auth-error:       #ff4466;
+  --auth-success:     #00cc88;
+  --auth-font-head:   'Orbitron', sans-serif;
+  --auth-font-body:   'Rajdhani', sans-serif;
+  --auth-transition:  0.65s cubic-bezier(0.77, 0, 0.18, 1);
 }
 
 /* ── Contenedor página ── */
@@ -29,14 +29,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--wf-bg);
-  /* Grid de fondo animado */
+  background: var(--auth-bg);
   background-image:
     linear-gradient(rgba(0,170,221,.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0,170,221,.04) 1px, transparent 1px);
   background-size: 48px 48px;
   animation: wfGridDrift 20s linear infinite;
-  font-family: var(--wf-font-body);
+  font-family: var(--auth-font-body);
 }
 
 @keyframes wfGridDrift {
@@ -50,8 +49,8 @@
   width: 780px;
   height: 500px;
   max-width: 100%;
-  background: var(--wf-bg);
-  border: 1px solid var(--wf-border);
+  background: var(--auth-bg);
+  border: 1px solid var(--auth-border);
   border-radius: 2px;
   overflow: hidden;
   display: flex;
@@ -73,25 +72,25 @@
 /* ── Panel Login (izquierda fija) ── */
 .wf-panel--login {
   left: 0;
-  background: var(--wf-bg);
+  background: var(--auth-bg);
   z-index: 1;
 }
 
 /* ── Panel Registro (derecha fija, debajo del brand) ── */
 .wf-panel--register {
   right: 0;
-  background: var(--wf-bg);
+  background: var(--auth-bg);
   z-index: 1;
 }
 
 /* ── Panel Brand (deslizante) ── */
 .wf-panel--brand {
   right: 0;
-  background: var(--wf-bg-alt);
-  border-left: 1px solid var(--wf-border);
+  background: var(--auth-bg-alt);
+  border-left: 1px solid var(--auth-border);
   z-index: 2;
   transition:
-    transform var(--wf-transition),
+    transform var(--auth-transition),
     border-left-color 0.1s 0.32s,
     border-right-color 0.1s 0s;
 }
@@ -100,7 +99,7 @@
 .wf-card--register .wf-panel--brand {
   transform: translateX(-100%);
   border-left-color: transparent;
-  border-right: 1px solid var(--wf-border);
+  border-right: 1px solid var(--auth-border);
 }
 
 /* ── Formulario ── */
@@ -118,11 +117,11 @@
 }
 
 .wf-form-title {
-  font-family: var(--wf-font-head);
+  font-family: var(--auth-font-head);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: var(--wf-text);
+  color: var(--auth-text);
   margin: 0 0 1.4rem;
   text-align: center;
 }
@@ -141,13 +140,13 @@
   to   { opacity: 1; transform: translateX(0); }
 }
 .wf-alert--error {
-  color: var(--wf-error);
-  border-color: var(--wf-error);
+  color: var(--auth-error);
+  border-color: var(--auth-error);
   background: rgba(255, 68, 102, 0.08);
 }
 .wf-alert--success {
-  color: var(--wf-success);
-  border-color: var(--wf-success);
+  color: var(--auth-success);
+  border-color: var(--auth-success);
   background: rgba(0, 204, 136, 0.08);
 }
 
@@ -168,10 +167,10 @@
 }
 .wf-field label {
   display: block;
-  font-family: var(--wf-font-head);
+  font-family: var(--auth-font-head);
   font-size: 0.52rem;
   letter-spacing: 0.22em;
-  color: var(--wf-text-dim);
+  color: var(--auth-text-dim);
   margin-bottom: 0.3rem;
 }
 
@@ -182,11 +181,11 @@
 .wf-input-wrap input {
   width: 100%;
   box-sizing: border-box;
-  background: var(--wf-surface);
-  border: 1px solid var(--wf-border);
+  background: var(--auth-surface);
+  border: 1px solid var(--auth-border);
   border-radius: 0;
-  color: var(--wf-text);
-  font-family: var(--wf-font-body);
+  color: var(--auth-text);
+  font-family: var(--auth-font-body);
   font-size: 0.95rem;
   font-weight: 400;
   letter-spacing: 0.04em;
@@ -195,11 +194,11 @@
   transition: border-color 0.2s, background 0.2s;
 }
 .wf-input-wrap input::placeholder {
-  color: var(--wf-text-dim);
+  color: var(--auth-text-dim);
   opacity: 0.5;
 }
 .wf-input-wrap input:focus {
-  border-color: var(--wf-accent);
+  border-color: var(--auth-accent);
   background: #0f1e32;
 }
 .wf-input-wrap input:focus ~ .wf-input-bar {
@@ -211,7 +210,7 @@
   position: absolute;
   bottom: 0; left: 0;
   height: 2px; width: 100%;
-  background: linear-gradient(90deg, var(--wf-accent-2), var(--wf-accent));
+  background: linear-gradient(90deg, var(--auth-accent-2), var(--auth-accent));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s ease;
@@ -224,12 +223,12 @@
   right: 0.5rem; top: 50%;
   transform: translateY(-50%);
   background: none; border: none; cursor: pointer;
-  color: var(--wf-text-dim);
+  color: var(--auth-text-dim);
   padding: 0.2rem;
   display: flex; align-items: center;
   transition: color 0.2s;
 }
-.wf-eye:hover { color: var(--wf-accent); }
+.wf-eye:hover { color: var(--auth-accent); }
 .wf-eye svg { width: 15px; height: 15px; display: block; }
 
 /* ── Botón submit ── */
@@ -237,10 +236,10 @@
   width: 100%;
   margin-top: 0.3rem;
   padding: 0.65rem 1rem;
-  background: linear-gradient(90deg, var(--wf-accent-2), var(--wf-accent));
+  background: linear-gradient(90deg, var(--auth-accent-2), var(--auth-accent));
   border: none;
   color: #fff;
-  font-family: var(--wf-font-head);
+  font-family: var(--auth-font-head);
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -294,35 +293,35 @@
 }
 
 .wf-brand-name {
-  font-family: var(--wf-font-head);
+  font-family: var(--auth-font-head);
   font-size: 1.05rem;
   font-weight: 900;
   letter-spacing: 0.35em;
-  color: var(--wf-text);
+  color: var(--auth-text);
   margin: 0;
 }
 
 .wf-brand-sub {
-  font-family: var(--wf-font-head);
+  font-family: var(--auth-font-head);
   font-size: 0.48rem;
   letter-spacing: 0.2em;
-  color: var(--wf-text-dim);
+  color: var(--auth-text-dim);
   margin: 0;
 }
 
 .wf-divider {
   width: 60%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--wf-border-2), transparent);
+  background: linear-gradient(90deg, transparent, var(--auth-border-2), transparent);
 }
 
 /* ── Botón del panel brand ── */
 .wf-brand-btn {
   padding: 0.6rem 1.8rem;
   background: transparent;
-  border: 1px solid var(--wf-accent);
-  color: var(--wf-accent);
-  font-family: var(--wf-font-head);
+  border: 1px solid var(--auth-accent);
+  color: var(--auth-accent);
+  font-family: var(--auth-font-head);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -352,14 +351,14 @@
   }
   .wf-panel--brand {
     border-left: none;
-    border-top: 1px solid var(--wf-border);
+    border-top: 1px solid var(--auth-border);
     right: auto;
     order: -1;
   }
   .wf-card--register .wf-panel--brand {
     transform: none;
     border-right: none;
-    border-bottom: 1px solid var(--wf-border);
+    border-bottom: 1px solid var(--auth-border);
   }
   .wf-panel--login,
   .wf-panel--register {
@@ -413,10 +412,28 @@
   color: #0b0b12;
 }
 
-@media (max-width: 640px) {
+@media (min-width: 861px) and (max-width: 1100px) {
+  .btn-login,
+  .btn-register {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    padding: 0.42rem 0.9rem;
+  }
+}
+
+@media (max-width: 860px) {
   .auth-buttons {
     right: 1rem;
     gap: 0.5rem;
   }
-  .btn-login { display: none; }
+  .btn-login,
+  .btn-register {
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-buttons { display: none; }
 }

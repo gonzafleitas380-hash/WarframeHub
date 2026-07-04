@@ -23,14 +23,16 @@ router.get('/', async (req, res) => {
           rol:        data.rol,
           progenitor: data.info.progenitor,
           tienePrime: data.tienePrime,
-          imagen:     data.imagenes.perfil
+          imagen:     data.imagenes.perfil,
+          imagenPrime: data.imagenes.prime || ''
         };
       })
     );
 
-    // Orden alfabético
-    warframes.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    res.json(warframes);
+    // Filtrar JSONs vacíos (sin nombre) y ordenar alfabéticamente
+    const completos = warframes.filter(w => w.nombre && w.nombre.trim() !== '');
+    completos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    res.json(completos);
 
   } catch (err) {
     console.error('Error leyendo warframes:', err);

@@ -10,14 +10,32 @@ import WarframeCrafting from './WarframeCrafting';
 import WarframeAcquisition from './WarframeAcquisition';
 import WarframeCuriosities from './WarframeCuriosities';
 import WarframeBuilds from './WarframeBuilds';
+import DualWarframeToggle from './DualWarframeToggle';
 import '../../styles/Wisp.css';
+import '../../styles/Login.css';
+
+function buildActiveData(data, activeForm) {
+  const form = data[activeForm];
+  return {
+    ...data,
+    imagenes: { ...data.imagenes, perfil: form.imagenes.perfil },
+    danio: form.danio,
+    stats: form.stats,
+    info: { ...data.info, ...form.info },
+    habilidades: [
+      ...form.habilidades,
+      ...data.habilidadesCompartidas,
+    ],
+  };
+}
 
 function WarframePage() {
   const { nombre } = useParams();
-  const [data, setData]       = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
-  const [precios, setPrecios] = useState(null);
+  const [data, setData]           = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
+  const [precios, setPrecios]     = useState(null);
+  const [activeForm, setActiveForm] = useState('sirius');
 
   // Fetch del JSON del warframe
   useEffect(() => {
@@ -49,7 +67,7 @@ function WarframePage() {
     Promise.all(
       data.prime.wfmSlugs.map(slug =>
         fetch(`/api/market/${slug}`)
-          .then(res => res.json())
+          .then(res => res.ok ? res.json() : { precio: null, vendedor: null })
           .catch(() => ({ precio: null, vendedor: null }))
       )
     ).then(resultados => {
@@ -61,24 +79,29 @@ function WarframePage() {
   if (error)   return <div className="wf-pg__state--error">{error}</div>;
   if (!data)   return null;
 
+  const activeData = data.dualWarframe ? buildActiveData(data, activeForm) : data;
+
   return (
     <>
       <WarframeNav nombre={data.nombre} />
       <WarframeStatsBar />
-      <WarframeHero data={data} />
+      <WarframeHero data={activeData} />
       <div className="wf-pg__layout--wrapper">
-        <WarframeSidebar data={data} />
+        <WarframeSidebar data={activeData} />
         <main className="wf-pg__main--content">
           <div className="wf-pg__block--title">
             <div className="wf-pg__text--title"><em>{data.nombre}</em></div>
             <div className="wf-pg__text--subtitle">{data.subtitulo}</div>
           </div>
-          <WarframeDescription data={data} />
-          <WarframeAbilities data={data} />
-          <WarframeCrafting data={data} />
-          <WarframeAcquisition data={data} preciosWFM={precios} />
-          <WarframeCuriosities data={data} />
-          <WarframeBuilds data={data} />
+          {data.dualWarframe && (
+            <DualWarframeToggle active={activeForm} onChange={setActiveForm} />
+          )}
+          <WarframeDescription data={activeData} />
+          <WarframeAbilities data={activeData} />
+          <WarframeCrafting data={activeData} />
+          <WarframeAcquisition data={activeData} preciosWFM={precios} />
+          <WarframeCuriosities data={activeData} />
+          <WarframeBuilds data={activeData} />
         </main>
       </div>
       <footer className="wf-pg__footer--main">
