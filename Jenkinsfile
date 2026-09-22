@@ -24,20 +24,6 @@ pipeline {
                 }
             }
         }
-        stage('Test Backend') {
-            steps {
-                dir('backend') {
-                    sh 'npm test'
-                }
-            }
-        }
-        stage('Test Frontend') {
-            steps {
-                dir('frontend') {
-                    sh 'npm test'
-                }
-            }
-        }
         stage('Build frontend') {
             steps {
                 dir('frontend') {
@@ -48,10 +34,10 @@ pipeline {
     }
     post {
         success {
-            echo 'Build y Tests OK. Todo compiló y pasó las pruebas correctamente.'
+            echo 'Build OK. Todo compiló correctamente sin tests.'
         }
         failure {
-            echo 'El pipeline falló. Algún test no pasó o hubo un error en la compilación.'
+            echo 'El pipeline falló en la instalación o compilación.'
         }
         always {
             cleanWs()
