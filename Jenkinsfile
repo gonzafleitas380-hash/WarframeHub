@@ -12,7 +12,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'rm -f package-lock.json'
-                    sh 'npm install'
+                    sh 'npm install --legacy-peer-deps'
                 }
             }
         }
@@ -20,7 +20,7 @@ pipeline {
             steps {
                 dir('frontend') {
                     sh 'rm -f package-lock.json'
-                    sh 'npm install'
+                    sh 'npm install --legacy-peer-deps'
                 }
             }
         }
