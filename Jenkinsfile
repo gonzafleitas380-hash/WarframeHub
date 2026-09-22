@@ -11,6 +11,7 @@ pipeline {
         stage('Install backend dependencies') {
             steps {
                 dir('backend') {
+                    sh 'npm cache clean --force'
                     sh 'npm install'
                 }
             }
@@ -18,6 +19,7 @@ pipeline {
         stage('Install frontend dependencies') {
             steps {
                 dir('frontend') {
+                    sh 'npm cache clean --force'
                     sh 'npm install'
                 }
             }
