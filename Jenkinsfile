@@ -2,9 +2,6 @@ pipeline {
     agent {
         docker { image 'node:20' }
     }
-    environment {
-        NODE_ENV = 'production'
-    }
     stages {
         stage('Checkout') {
             steps {
